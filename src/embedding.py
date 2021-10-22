@@ -75,7 +75,7 @@ def parse_args():
                         help='Number of dimensions. Default is 40.')
 
     parser.add_argument('--markov-time', type=float, default=0.5,
-                        help='Markov time in terms of power of 10. Default is 5 (for 10^0.5).')
+                        help='Markov time in terms of power of 10. Default is 0.5 (for 10^0.5).')
 
     parser.add_argument('--signed', type=literal_eval, default=True,
                         help='Whether to generate signed (POLE) or unsigned (RWE) embedding. '

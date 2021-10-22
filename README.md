@@ -17,7 +17,7 @@ To embed the WoW-EP8 network with default settings:
 
     python src/embedding.py --graph graph/WoW-EP8.edges --embedding emb/WoW-EP8.embedding
 
-where `graph/WoW-EP8.edges` stores the input graph and `emb/WoW-EP8.embedding` is the target file for output embeddings. 
+where `graph/WoW-EP8.edges` stores the input graph and `emb/WoW-EP8.embedding` is the target file for output embedding. 
 ### Options
 You can check out all the available options with:
 
@@ -26,7 +26,7 @@ You can check out all the available options with:
 ### Input Graph
 The supported input graph format is a list of edges:
 
-	node1_id_int node2_id_int <signed_weight_float>
+	node1_id_int node2_id_int signed_weight_float
 		
 where node ids are should be consecutive integers starting from 0 and weights include link signs. 
 
@@ -49,15 +49,15 @@ We first need to remove a proportion of links in the original graph for testing:
      
      python src/slp.py --mode preparation --graph graph/WoW-EP8.edges --removed-edges graph/WoW-EP8.removed-edges --remaining-edges graph/WoW-EP8.remaining-edges
 
-This takes the original graph `graph/WoW-EP8.edges` as input and output the removed and remaining edges (residual graph) to `graph/WoW-EP8.removed-edges` and `graph/WoW-EP8.remaining-edges`.
+This takes the original graph `graph/WoW-EP8.edges` as input and outputs the removed and remaining edges (residual graph) to `graph/WoW-EP8.removed-edges` and `graph/WoW-EP8.remaining-edges`.
 
 ### Signed Link Prediction
 
-Vanilla signed link prediction takes the input of POLE embedding based on the residual graph. We first generate the residual embedding. For example:
+Vanilla signed link prediction takes the input of POLE embedding based on the residual graph. We first generate the residual embedding:
 
     python src/embedding.py --graph graph/WoW-EP8.remaining-edges --embedding emb/WoW-EP8.residual-embedding --markov-time 0.5
 
-Then, we can evaluate the performance of signed link prediciton in terms of *positive precision@k* and *negative precision@k*:
+Then, we can evaluate the performance of signed link prediction in terms of *positive precision@k* and *negative precision@k*:
     
     python src/slp.py --mode slp --embedding emb/WoW-EP8.residual-embedding --removed-edges graph/WoW-EP8.removed-edges --remaining-edges graph/WoW-EP8.remaining-edges --k 1.0
 
@@ -65,8 +65,8 @@ The results for WoW-EP8 dataset with varying *k* are as follows:
 
 |       k      |   10%  |   20%  |   30%  |   40%  |   50%  |   60%  |   70%  |   80%  |   90%  |  100%  |
 |:------------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
-| Positive p@k | 0.9836 | 0.9716 | 0.9434 | 0.9056 | 0.8582 | 0.8108 | 0.7623 | 0.7113 | 0.6670 | 0.6272 |
-| Negative p@k | 0.2276 | 0.2290 | 0.2064 | 0.1910 | 0.1809 | 0.1731 | 0.1671 | 0.1583 | 0.1512 | 0.1446 |
+| Positive precision@k | 0.9836 | 0.9716 | 0.9434 | 0.9056 | 0.8582 | 0.8108 | 0.7623 | 0.7113 | 0.6670 | 0.6272 |
+| Negative precision@k | 0.2276 | 0.2290 | 0.2064 | 0.1910 | 0.1809 | 0.1731 | 0.1671 | 0.1583 | 0.1512 | 0.1446 |
 
 
 ### Signed Link Prediction with Link Existence Information
@@ -85,12 +85,32 @@ The results for WoW-EP8 dataset with varying *k* are as follows:
 
 |       k      |   10%  |   20%  |   30%  |   40%  |   50%  |   60%  |   70%  |   80%  |   90%  |  100%  |
 |:------------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
-| Positive p@k | 0.9905 | 0.9677 | 0.9385 | 0.8975 | 0.8522 | 0.8030 | 0.7521 | 0.7032 | 0.6600 | 0.6203 |
-| Negative p@k | 0.4368 | 0.3694 | 0.3438 | 0.3222 | 0.3071 | 0.2978 | 0.2818 | 0.2682 | 0.2566 | 0.2441 |
+| Positive precision@k | 0.9905 | 0.9677 | 0.9385 | 0.8975 | 0.8522 | 0.8030 | 0.7521 | 0.7032 | 0.6600 | 0.6203 |
+| Negative precision@k | 0.4368 | 0.3694 | 0.3438 | 0.3222 | 0.3071 | 0.2978 | 0.2818 | 0.2682 | 0.2566 | 0.2441 |
 
+## Polarization
+We also propose a partition-agnostic polarization measure for signed graphs based on the correlation between signed and unsigned random-walk transitions. 
+Full options for computing the polarization scores are can be found with:
+
+    python src/polarization.py --help
+
+### Node-level Polarization
+To compute node-level polarization scores for all nodes in the Congress dataset:
+
+    python src/polarization.py --graph graph/Congress.edges --node-polarization pol/Congress.node-polarization
+    
+The output polarization score file `*.node-polarization` has *n* lines and each line stores the polarization score for the node with its id equal to the line number. 
+For the Congress dataset, we can see node 217 has the lowest polarization score of -0.6542 and it corresponds to Henry Cuellar. 
+
+### Graph-level Polarization
+The graph-level polarization score for the Congress dataset can be computed with:
+
+    python src/polarization.py --node-level False --graph graph/Congress.edges --markov-time 0.2
+    
+which should return a score of 0.9227.     
 
 ## Citing
-If you find our framework useful, please consider citing the following paper:
+If you find our method useful, please consider citing the following paper:
 
 	@inproceedings{pole,
 	author = {Huang, Zexi and Silva, Arlei and Singh, Ambuj},

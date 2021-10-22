@@ -89,7 +89,7 @@ def unsigned_random_walk_laplacian_matrix(G):
 def transition_matrix(L, t):
     """
     Transition matrix based on the Laplacian matrix and Markov time.
-    P(t) = exp(-Lt).
+    M(t) = exp(-Lt).
 
     :param L: Laplacian matrix.
     :param t: Markov time.
