@@ -4,7 +4,7 @@ This repository is a reference implementation of the polarized embedding method 
 <br/>
 > POLE: Polarized Embedding for Signed Networks.<br>
 > Zexi Huang, Arlei Silva, Ambuj Singh.<br>
-> To appear, ACM International Conference on Web Search and Data Mining, 2022.
+> ACM International Conference on Web Search and Data Mining, 2022.
 > <Insert paper link>
 
 The proposed method, POLE, captures both topological and signed similarities jointly via signed autocovariance and leverages matrix factorization to generate embedding. 
